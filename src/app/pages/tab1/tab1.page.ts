@@ -15,11 +15,25 @@ export class Tab1Page  implements OnInit {
   constructor(private noticiasService: NoticiasService) {}
 
   ngOnInit() {
-    this.noticiasService.getTopHeadLines().subscribe( respuesta => {
-      // console.log('Noticias', respuesta);
-      // this.noticias = respuesta.articles;
-      this.noticias.push( ...respuesta.articles );
-    });
+    this.consultarNoticias();
   }
 
+  loadData( event ){
+    this.consultarNoticias( event );
+  }
+
+  consultarNoticias( event? ){
+    this.noticiasService.getTopHeadLines().subscribe( respuesta => {
+      if (respuesta.articles.length === 0) {
+        event.target.complete();
+        event.target.disabled = true;
+      }
+
+      this.noticias.push( ...respuesta.articles );
+
+      if ( event ) {
+        event.target.complete();
+      }
+    });
+  }
 }

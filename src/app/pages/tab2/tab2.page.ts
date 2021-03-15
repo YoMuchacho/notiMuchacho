@@ -34,9 +34,22 @@ export class Tab2Page implements OnInit, AfterViewInit{
     this.consultarNoticias(event.detail.value);
   }
 
-  consultarNoticias(categoria: string){
+  consultarNoticias(categoria: string, event?){
     this.noticiasService.getTopHeadLinesCategoria(categoria).subscribe( respuesta => {
+      if (respuesta.articles.length === 0) {
+        event.target.complete();
+        event.target.disabled = true;
+      }
+
       this.noticias.push( ...respuesta.articles);
+
+      if ( event ) {
+        event.target.complete();
+      }
     });
+  }
+
+  loadData( event ){
+    this.consultarNoticias(this.ionSegment.value , event);
   }
 }
